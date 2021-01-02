@@ -35,9 +35,9 @@ class Particle:
         self.x = x
         self.y = y
         self.radius = size
-        self.thickness = 3
+        self.thickness = 4
         self.color = (255,255,255)
-        self.speed = random.randint(1,5)
+        self.speed = random.random()* 0.5 #random.randrange(1,2)
         self.direction = random.random()*2*math.pi
 
     def display(self):
@@ -46,6 +46,11 @@ class Particle:
     def collision(self, Particle):
         dist = math.dist((self.x,self.y),(Particle.x,Particle.y))
         if dist <= self.radius + Particle.radius:
+            if self.radius < Particle.radius:
+                self.speed = Particle.speed
+                self.x = Particle.x
+                self.y = Particle.y
+            self.direction = ((self.direction + Particle.direction)/2)
             self.radius = math.sqrt(self.radius**2 + Particle.radius**2)
             self.color = (random.randint(100,255), random.randint(100,255), random.randint(100,255))
             return True
