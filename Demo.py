@@ -21,7 +21,7 @@ def main():
     pygame.init()
     global display_surf
     display_surf = pygame.display.set_mode((window_width,window_height))
-    pygame.display.set_caption('Moving Particles')
+    pygame.display.set_caption('Bouncing Circles Screensaver')
 
 #Draws the black window and divider line. 
 def drawArena():
@@ -35,9 +35,9 @@ class Particle:
         self.x = x
         self.y = y
         self.radius = size
-        self.thickness = 3
+        self.thickness = 4
         self.color = (255,255,255)
-        self.speed = random.randrange(1,4)
+        self.speed = random.randrange(3,5)
         self.direction = random.random()*2*math.pi
 
     def display(self):
