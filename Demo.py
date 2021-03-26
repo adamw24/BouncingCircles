@@ -2,7 +2,7 @@ import pygame, sys
 from pygame.locals import *
 import random
 from array import *
-import math
+from math import *
 from tkinter import * 
 import keyboard
 
@@ -35,52 +35,58 @@ class Particle:
         self.x = x
         self.y = y
         self.radius = size
-        self.thickness = 4
+        self.thickness = 3
         self.color = (255,255,255)
         self.speed = random.randrange(3,5)
-        self.direction = random.random()*2*math.pi
+        self.direction = random.random()*2*pi
 
     def display(self):
         pygame.draw.circle(display_surf, self.color, (self.x, self.y), self.radius, self.thickness)
     
     def collision(self, Particle):
-        dist = math.dist((self.x,self.y),(Particle.x,Particle.y))
-        if dist <= self.radius + Particle.radius:
-            if self.radius < Particle.radius:
-                self.speed = Particle.speed
-            self.x = (self.x + Particle.x)/2
-            self.y = (self.y + Particle.y)/2
-            self.direction = ((self.direction + Particle.direction)/2)
-            self.radius = math.sqrt(self.radius**2 + Particle.radius**2)
+        distance= dist((self.x,self.y),(Particle.x,Particle.y))
+        if distance <= self.radius + Particle.radius:
+            self_mass = (pi*self.radius**2)
+            particle_mass = (pi*Particle.radius**2)
+            sum_mass = self_mass + particle_mass
+            speedx = self_mass*(self.speed*cos(self.direction)) + particle_mass*(Particle.speed*cos(Particle.direction))
+            speedx /= sum_mass
+            speedy = self_mass*(self.speed*sin(self.direction)) + particle_mass*(Particle.speed*sin(Particle.direction))
+            speedy /= sum_mass
+            self.speed = sqrt(speedx**2 + speedy**2)
+            self.direction = atan2(speedy,speedx)
+            self.x = (self.x*self_mass + Particle.x*particle_mass)/ sum_mass
+            self.y = (self.y*self_mass + Particle.y*particle_mass)/ sum_mass
+            self.radius = sqrt(self.radius**2 + Particle.radius**2)
             self.color = (random.randint(100,255), random.randint(100,255), random.randint(100,255))
             return True
         else:
             return False
             
     def move(self):
-        change_x = math.cos(self.direction)*self.speed
-        change_y= math.sin(self.direction)*self.speed
+        change_x = cos(self.direction)*self.speed
+        change_y= sin(self.direction)*self.speed
         bounce = False
-        if change_x + self.x >= window_width or change_x + self.x <=0:
+        if change_x + self.x + self.radius >= window_width or change_x + self.x - self.radius <=0:
             self.x -= change_x
-            self.direction = (math.pi)-self.direction
+            self.direction = (pi)-self.direction
             bounce = True
         else:
             self.x += change_x
 
-        if change_y + self.y >= window_height or change_y +self.y <=0:
+        if change_y + self.y + self.radius>= window_height or change_y + self.y - self.radius <=0:
             self.y -= change_y
             self.direction *= -1
             bounce = True
         else:
             self.y += change_y
-        self.direction %= (math.pi*2)
+        self.direction %= (pi*2)
 
 my_particles = []
-num = 15
+num = 8
 def create_particles(num):  
     for n in range(num):
-        size = random.randint(30, 50)
+        size = random.randint(40, 60)
         x = random.randint(size, window_width-size)
         y = random.randint(size, window_height-size)
         my_particles.append(Particle(x, y, size))
