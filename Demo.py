@@ -64,29 +64,29 @@ class Particle:
             return False
             
     def move(self):
+        self.direction %= (pi*2)
         change_x = cos(self.direction)*self.speed
         change_y= sin(self.direction)*self.speed
-        bounce = False
-        if change_x + self.x + self.radius >= window_width or change_x + self.x - self.radius <=0:
-            self.x -= change_x
-            self.direction = (pi)-self.direction
-            bounce = True
+        if (change_x + self.x + self.radius >= window_width and (self.direction < pi/2 or self.direction > 3*pi/2))\
+            or change_x + self.x - self.radius <=0 and (self.direction > pi/2 and self.direction < 3*pi/2):
+                self.x -= change_x
+                self.direction = (pi)-self.direction
         else:
             self.x += change_x
 
-        if change_y + self.y + self.radius>= window_height or change_y + self.y - self.radius <=0:
-            self.y -= change_y
-            self.direction *= -1
-            bounce = True
-        else:
+        if change_y + self.y + self.radius>= window_height and (self.direction > pi and self.direction < 2*pi) \
+            or (change_y + self.y - self.radius <=0 and (self.direction < pi and self.direction > 0)):
             self.y += change_y
+            self.direction *= -1
+        else:
+            self.y -= change_y
         self.direction %= (pi*2)
 
 my_particles = []
-num = 8
+num = 10
 def create_particles(num):  
     for n in range(num):
-        size = random.randint(40, 60)
+        size = random.randint(30, 50)
         x = random.randint(size, window_width-size)
         y = random.randint(size, window_height-size)
         my_particles.append(Particle(x, y, size))
@@ -106,7 +106,7 @@ while True:
     index = 0
     while index < num_particles:
         particle = my_particles[index]
-        check =0
+        check = 0
         while check < num_particles:
             if check != index and particle.collision(my_particles[check]):
                 del(my_particles[check])
