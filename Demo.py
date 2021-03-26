@@ -11,8 +11,8 @@ WHITE = (255,255,255)
 
 root = Tk() 
 
-window_width = root.winfo_screenwidth()-100
-window_height = root.winfo_screenheight()-100
+window_width = root.winfo_screenwidth() -100
+window_height = root.winfo_screenheight() -100
 point_thickness = 3
 display_surf = pygame.display.set_mode((window_width,window_height))
 
@@ -37,7 +37,7 @@ class Particle:
         self.radius = size
         self.thickness = 3
         self.color = (255,255,255)
-        self.speed = random.randrange(3,5)
+        self.speed = random.randrange(3,6)
         self.direction = random.random()*2*pi
 
     def display(self):
@@ -83,10 +83,10 @@ class Particle:
         self.direction %= (pi*2)
 
 my_particles = []
-num = 10
+num = 6
 def create_particles(num):  
     for n in range(num):
-        size = random.randint(30, 50)
+        size = random.randint(35, 55)
         x = random.randint(size, window_width-size)
         y = random.randint(size, window_height-size)
         my_particles.append(Particle(x, y, size))
