@@ -22,14 +22,9 @@ def main():
     global display_surf
     display_surf = pygame.display.set_mode((window_width,window_height))
     pygame.display.set_caption('Bouncing Circles Screensaver')
+    display_surf.fill(BLACK)
 
-#Draws the black window and divider line. 
-def drawArena():
-    display_surf.fill((0,0,0))
-    #Draw outline of arena
-    pygame.draw.rect(display_surf, BLACK, ((0,0),(window_width,window_height)))
-    #Draw center line
-
+#Particle object class.
 class Particle:
     def __init__(self, x,y,size):
         self.x = x
@@ -40,9 +35,11 @@ class Particle:
         self.speed = random.randrange(3,6)
         self.direction = random.random()*2*pi
 
+    #Draws the particle.
     def display(self):
         pygame.draw.circle(display_surf, self.color, (self.x, self.y), self.radius, self.thickness)
     
+    #Checks if this particle collides with another particle.
     def collision(self, Particle):
         distance= dist((self.x,self.y),(Particle.x,Particle.y))
         if distance <= self.radius + Particle.radius:
@@ -62,7 +59,8 @@ class Particle:
             return True
         else:
             return False
-            
+    
+    #Changes the position of the particle based on the speed direction. CHecks if it bounces against a wall or not.
     def move(self):
         self.direction %= (pi*2)
         change_x = cos(self.direction)*self.speed
@@ -82,8 +80,10 @@ class Particle:
             self.y -= change_y
         self.direction %= (pi*2)
 
+#Stores the displayed particles.
 my_particles = []
 num = 6
+#Generates the particles with random size, speed, and starting positions and adds them to the list of particles.
 def create_particles(num):  
     for n in range(num):
         size = random.randint(35, 55)
@@ -91,7 +91,7 @@ def create_particles(num):
         y = random.randint(size, window_height-size)
         my_particles.append(Particle(x, y, size))
 
-drawArena()
+
 create_particles(num)
 
 #Main Loop
@@ -104,9 +104,11 @@ while True:
     display_surf.fill(BLACK)
     num_particles=len(my_particles)
     index = 0
+    #Iterates through all the particles.
     while index < num_particles:
         particle = my_particles[index]
         check = 0
+        #Checks if this particle collides with any other particle and if so, deletes the other particle.
         while check < num_particles:
             if check != index and particle.collision(my_particles[check]):
                 del(my_particles[check])
@@ -116,10 +118,10 @@ while True:
         particle.move()
         particle.display()
         index +=1
+    #Resets the demo with new particles.
     if keyboard.is_pressed('r'):
         my_particles.clear()
         display_surf.fill(BLACK)
-
         create_particles(num)
 
     pygame.display.flip()
